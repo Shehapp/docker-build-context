@@ -3,7 +3,9 @@ version: "3.8"
  
 #create new network i.e " docker network create counter-net "
 networks:
-  counter-net:
+  global-net:
+  local-net:
+    internal: true
 
 #create new volume i.e " docker volume create counter-vol "
 volumes:
@@ -15,14 +17,15 @@ services:
     build: .
     command: python hello.py
     networks:
-      - counter-net
+      - global-net
+      - local-net
 
     ports:
       - target : 8000
         published : 8000 
   redis:
     image: "redis:alpine"
-    networks:
-      counter-net:
+    networks: 
+     - local-net
 
     

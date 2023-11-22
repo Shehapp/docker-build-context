@@ -23,6 +23,7 @@ SHELL [ "/bin/bash","-c" ]
 
 # create container install all packages remove container (a layer)
 RUN pip install -r req.txt
+RUN apt-get update && apt-get install -y iputils-ping
 
 
 # won't create (a new layer) cuz it will change in meta-date
