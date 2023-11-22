@@ -1,0 +1,28 @@
+# version docker-compose is Compatibile with docker version
+version: "3.8"
+ 
+#create new network i.e " docker network create counter-net "
+networks:
+  counter-net:
+
+#create new volume i.e " docker volume create counter-vol "
+volumes:
+  counter-vol:
+
+
+services:
+  pythonapi:
+    build: .
+    command: python hello.py
+    networks:
+      - counter-net
+
+    ports:
+      - target : 8000
+        published : 8000 
+  redis:
+    image: "redis:alpine"
+    networks:
+      counter-net:
+
+    

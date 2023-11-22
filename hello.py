@@ -1,16 +1,28 @@
 from fastapi import FastAPI
+import time
+import redis
+
 
 app = FastAPI()
+cache = redis.Redis(host='redis', port=6379)
+
+
+def get_hit_count():
+    retries = 5
+    while True:
+        try:
+            return cache.incr('hits')
+        except redis.exceptions.ConnectionError as exc:
+            if retries == 0:
+                raise exc
+            retries -= 1
+            time.sleep(0.5)
 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+    count = get_hit_count()
+    return "What's up Docker Deep Divers! You've visited me {} times.\n".format(count)
 
 if __name__ == "__main__":
     import uvicorn
